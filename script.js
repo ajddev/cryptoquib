@@ -96,7 +96,7 @@ function handleMouseClick(e) {
     return;
   }
   if (e.target.matches("[data-delete]")) {
-    deleteKey();
+    deleteKeys();
     return;
   }
   // clicked a tile box, add active dataset state to all matches
@@ -116,7 +116,7 @@ function handleKeyPress(e) {
     return;
   }
   if (e.key === "Backspace" || e.key === "Delete") {
-    deleteKey();
+    deleteKeys();
     return;
   }
   if (e.key.match(/^[a-z]$/)) {
@@ -126,14 +126,33 @@ function handleKeyPress(e) {
 }
 
 function pressKey(key) {
-  // set all active tiles to letter guess
   const activeTiles = getActiveTiles();
+
+  // active tiles have a letter, remove used from keyboard
+  if (activeTiles[0].dataset.letter) {
+    const keyboardKey = keyboard.querySelector(
+      `[data-key="${activeTiles[0].dataset.letter}"i]`
+    );
+    keyboardKey.classList.toggle("used");
+  }
+
+  // check if letter is already guessed, if so it must be removed from the other tiles
+  const guessedLetters = getGuessedLetters();
+  if (guessedLetters.includes(key.toUpperCase())) {
+    const removeTiles = getGuessTiles(key);
+    console.log(removeTiles);
+    for (let tile of removeTiles) {
+      tile.textContent = "";
+      delete tile.dataset.state;
+      delete tile.dataset.letter;
+    }
+  }
+
+  // set all active tiles to letter guess
   for (let tile of activeTiles) {
     tile.dataset.letter = key.toLowerCase();
     tile.textContent = key;
   }
-  // remove darkened used keyboard key if overwriting already guessed
-  const guessedLetters = getGuessedLetters();
 
   // update keyboard, darken used key
   const keyboardKey = keyboard.querySelector(`[data-key="${key}"i]`);
@@ -147,13 +166,19 @@ function pressKey(key) {
   setAllActiveTiles(nextTile?.parentNode.getAttribute(["data-letter"]));
 }
 
-function deleteKey() {
+function deleteKeys() {
   const activeTiles = getActiveTiles();
-  const lastTile = activeTiles[activeTiles.length - 1];
-  if (lastTile == null) return;
-  lastTile.textContent = "";
-  delete lastTile.dataset.state;
-  delete lastTile.dataset.letter;
+
+  if (activeTiles == null) return;
+  for (let tile of activeTiles) {
+    tile.textContent = "";
+    delete tile.dataset.state;
+    delete tile.dataset.letter;
+  }
+}
+
+function getGuessTiles(letter) {
+  return guessGrid.querySelectorAll(`[data-letter="${letter}"]`);
 }
 
 function getActiveTiles() {
