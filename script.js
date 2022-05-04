@@ -3,7 +3,6 @@
 // elements
 const screen = document.getElementById("screen");
 const wrapper = document.getElementById("wrapper");
-const instructions = document.getElementById("instructions");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 const keyboard = document.querySelector("[data-keyboard]");
@@ -13,17 +12,16 @@ const quibMD5 = "2fb69bcf9effdc051bbd5ef21cd85273";
 const permutedQuib =
   "qwt jlj ewy awlamyi ackdd ewy cknj? ek oye ek ewy kewyc dljy.";
 
-function displayInstructions() {
-  screen.classList.toggle("hidden");
-  wrapper.classList.toggle("hidden");
-  instructions.classList.toggle("hidden");
+function display(panel) {
+  screen.classList.toggle("hide");
+  wrapper.classList.toggle("hide");
+  document.getElementById(panel).classList.toggle("hide");
 }
-function closeInstructions() {
-  screen.classList.toggle("hidden");
-  wrapper.classList.toggle("hidden");
-  instructions.classList.toggle("hidden");
+function closed(panel) {
+  screen.classList.toggle("hide");
+  wrapper.classList.toggle("hide");
+  document.getElementById(panel).classList.toggle("hide");
 }
-
 // split quib into array of words
 // loop through words with createLetterTile and wrap in word class div
 function init() {
@@ -140,7 +138,6 @@ function pressKey(key) {
   const guessedLetters = getGuessedLetters();
   if (guessedLetters.includes(key.toUpperCase())) {
     const removeTiles = getGuessTiles(key);
-    console.log(removeTiles);
     for (let tile of removeTiles) {
       tile.textContent = "";
       delete tile.dataset.state;
@@ -290,6 +287,3 @@ function showAlert(message, duration = 1000) {
     });
   }, duration);
 }
-
-// function to create keyboard
-// should not be able to input a letter that is already used

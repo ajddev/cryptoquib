@@ -15,10 +15,10 @@
     <title>Cryptoquib</title>
   </head>
   <body>
-    <div id="screen" class="screen hidden">
-      <div id="wrapper" class="wrapper hidden">
-        <div id="instructions" class="instructions hidden">
-          <div class="close" onclick="closeInstructions()">x</div>
+    <div id="screen" class="screen hide">
+      <div id="wrapper" class="wrapper hide">
+        <div id="instructions" class="instructions hide">
+          <div class="close" onclick="closed('instructions')">x</div>
           <h1>HOW TO PLAY</h1>
           <p>
             Using the method of trial and error, find the solution to the
@@ -47,10 +47,63 @@
             </li>
 
             <li>
-              Look for repeating letter patterns, espescially near the beginning
+              Look for repeating letter patterns, especially near the beginning
               or end of words. (TH, SH, RE, CH, TR, ING, ION, ENT, etc.)
             </li>
           </ul>
+        </div>
+        <div id="high-scores" class="high-scores hide">
+          <div class="close" onclick="closed('high-scores')">x</div>
+          <h1>LEADERBOARD</h1>
+          <table class="ranking">
+            <tbody>
+              <tr class="score">
+                <th>Name</th>
+                <th>Duration</th>
+                <th>Time</th>
+              </tr>
+              <tr class="score">
+                <td>Crow</td>
+                <td>393s</td>
+                <td>12:06:23 am</td>
+              </tr>
+              <tr class="score">
+                <td>Flo</td>
+                <td>680s</td>
+                <td>12:08:43 am</td>
+              </tr>
+              <tr class="score">
+                <td>isobanaani</td>
+                <td>982s</td>
+                <td>12:11:20 am</td>
+              </tr>
+              <tr class="score">
+                <td>Franky</td>
+                <td>82s</td>
+                <td>12:23:20 am</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="settings" class="settings hide">
+          <div class="close" onclick="closed('settings')">x</div>
+          <h1>SETTINGS</h1>
+          <div class="container">
+            <div class="setting">
+              <div class="title">Dark Theme</div>
+              <div class="control">Switch</div>
+            </div>
+            <div class="setting">
+              <div class="title">Feedback</div>
+              <div class="control">
+                <a href="mailto:email@email.com">Email</a>
+              </div>
+            </div>
+            <div class="setting">
+              <div class="title">Community</div>
+              <div class="control"><a href="twitter.com">Twitter</a></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -68,7 +121,7 @@
             <rect x="0.172974" y="14" width="20" height="3" rx="1.5"></rect>
           </svg>
         </div>
-        <div class="help" onclick="displayInstructions()">
+        <div class="help" onclick="display('instructions')">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24"
@@ -85,7 +138,7 @@
         <img src="title-white.png" alt="cryptoquib" />
       </div>
       <div class="nav-right">
-        <div class="leaderboard">
+        <div class="leaderboard" onclick="display('high-scores')">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24"
@@ -97,7 +150,7 @@
             ></path>
           </svg>
         </div>
-        <div class="options">
+        <div class="options" onclick="display('settings')">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24"
