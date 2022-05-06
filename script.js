@@ -6,6 +6,7 @@ const wrapper = document.getElementById("wrapper");
 const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 const keyboard = document.querySelector("[data-keyboard]");
+const switchElement = document.getElementById("switch");
 
 // variables
 const quibMD5 = "2fb69bcf9effdc051bbd5ef21cd85273";
@@ -22,6 +23,18 @@ function closed(panel) {
   wrapper.classList.toggle("hide");
   document.getElementById(panel).classList.toggle("hide");
 }
+let mode = "light";
+
+switchElement.addEventListener("click", () => {
+  document.body.classList.toggle("dark-mode");
+  if (mode === "light") {
+    switchElement.style.border = "solid 1px rgb(255, 255, 255)";
+    mode = "dark";
+  } else {
+    switchElement.style.border = "solid 1px rgb(0, 0, 0)";
+    mode = "light";
+  }
+});
 // split quib into array of words
 // loop through words with createLetterTile and wrap in word class div
 function init() {
@@ -56,7 +69,7 @@ function createWords(string) {
 
 function createLetterTile(parentDiv, letter) {
   const div = document.createElement("div");
-  const tile = document.createElement("div");
+  const tile = document.createElement("button");
   div.className = "letter";
   tile.className = "tile";
   div.dataset.letter = letter;
@@ -86,7 +99,7 @@ function stopInteraction() {
 
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
-    pressKey(e.target.dataset.key);
+    pressKey(e.target.dataset.key.toLowerCase());
     return;
   }
   if (e.target.matches("[data-enter]")) {
@@ -167,6 +180,10 @@ function deleteKeys() {
   const activeTiles = getActiveTiles();
 
   if (activeTiles == null) return;
+  const keyboardKey = keyboard.querySelector(
+    `[data-key="${activeTiles[0].dataset.letter}"i]`
+  );
+  keyboardKey?.classList.toggle("used");
   for (let tile of activeTiles) {
     tile.textContent = "";
     delete tile.dataset.state;

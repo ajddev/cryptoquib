@@ -6,7 +6,7 @@
 }
 
 body {
-  background-color: hsl(240, 3%, 7%);
+  background-color: #000;
   display: flex;
   flex-direction: column;
   font-size: clamp(0.5rem, 2.5vmin, 1.5rem);
@@ -107,13 +107,65 @@ li {
 }
 
 .title {
+  font-weight: 500;
 }
 
 .control {
+  font-weight: 300;
 }
 
 .control a {
   color: inherit;
+}
+
+#switch {
+  width: 80px;
+  height: 40px;
+  border-radius: 20px;
+  border: 1px solid rgb(0, 0, 0);
+  background-color: rgb(50, 50, 50);
+  position: relative;
+}
+
+.toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  box-shadow: inset 4px 4px 4px rgb(255, 255, 255),
+    inset -5px -5px 10px rgb(150 150 150 / 95%);
+  transition: 1s;
+}
+
+.moon {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 0 rgb(255, 255, 255);
+  position: absolute;
+  top: 5px;
+  left: 45px;
+}
+
+.sun {
+  width: 8px;
+  height: 8px;
+  border: solid 1px rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border-radius: 50%;
+  box-shadow: 8px 0 0 -4px rgb(255, 255, 255), -8px 0 0 -4px rgb(255, 255, 255),
+    0 8px 0 -4px rgb(255, 255, 255), 0 -8px 0 -4px rgb(255, 255, 255),
+    6px -6px 0 -4px rgb(255, 255, 255), -6px -6px 0 -4px rgb(255, 255, 255),
+    -6px 6px 0 -4px rgb(255, 255, 255), 6px 6px 0 -4px rgb(255, 255, 255);
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+.dark-mode .toggle {
+  transform: translateX(40px);
 }
 
 svg {
@@ -132,8 +184,12 @@ svg {
 }
 
 .navbar img {
-  width: 10rem;
+  height: 25px;
   display: flex;
+}
+
+.navbar .title img {
+  /* filter: invert(1); */
 }
 
 .nav-left {
@@ -156,11 +212,6 @@ svg {
   padding: 0.5em;
   align-items: center;
   cursor: pointer;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 900;
 }
 
 .keyboard {
@@ -253,20 +304,23 @@ svg {
 }
 
 .tile {
+  background-color: transparent;
   width: 1.25em;
   height: 1.25em;
   font-size: 1rem;
   color: white;
+  cursor: pointer;
   border: 0.05em solid hsl(240, 2%, 23%);
   text-transform: uppercase;
   font-weight: 300;
-  opacity: 0.5;
+  opacity: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   user-select: none;
   transition: transform 250ms linear;
   padding: 0.25em;
+  outline: none;
 }
 
 .tile[data-state="active"] {
