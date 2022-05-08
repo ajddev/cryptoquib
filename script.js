@@ -9,9 +9,51 @@ const keyboard = document.querySelector("[data-keyboard]");
 const switchElement = document.getElementById("switch");
 
 // variables
-const quibMD5 = "2fb69bcf9effdc051bbd5ef21cd85273";
-const permutedQuib =
-  "qwt jlj ewy awlamyi ackdd ewy cknj? ek oye ek ewy kewyc dljy.";
+let quibMD5 = ""; //"2fb69bcf9effdc051bbd5ef21cd85273";
+let permutedQuib = "";
+//   "qwt jlj ewy awlamyi ackdd ewy cknj? ek oye ek ewy kewyc dljy.";
+
+fetch("https://v2.jokeapi.dev/joke/Any")
+  .then((response) => response.json())
+  .then((data) => setData(data));
+
+function setData(data) {
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+  const permuted = "kdpqoheawxnjzvurslmgytfbci";
+
+  quibMD5 = md5(
+    (data.joke || data.setup + " " + data.delivery)
+      .toLowerCase()
+      .split(" ")
+      .join("")
+  );
+  permutedQuib = `${(
+    data.joke || data.setup + " " + data.delivery
+  ).toLowerCase()}`;
+  console.log(permutedQuib);
+
+  let i = 0;
+  let result = "";
+  console.log(permutedQuib.length);
+  while (i < permutedQuib.length) {
+    let ind = alphabet.indexOf(permutedQuib.charAt(i));
+    result += permuted.charAt(ind) || permutedQuib.charAt(i);
+    // if (permutedQuib.charAt(i).match("/^[A-Za-z]+$/")) {
+    //   let ind = alphabet.indexOf(permutedQuib.charAt(i));
+    //   result = result + permuted.charAt(ind) || permutedQuib.charAt(i);
+    // } else {
+    //   result += permuted.charAt(permutedQuib.charAt(i));
+    //   console.log("test");
+    // }
+    i++;
+    console.log(result);
+  }
+
+  console.log(quibMD5);
+  console.log(result);
+  permutedQuib = result;
+  init();
+}
 
 function display(panel) {
   screen.classList.toggle("hide");
@@ -77,6 +119,9 @@ function createLetterTile(parentDiv, letter) {
 
   if (letter.toUpperCase() === letter.toLowerCase()) {
     tile.className = "tile hidden";
+    if (letter === "\n") {
+      tile.className = "tile hidden opacity";
+    }
     tile.dataset.letter = letter;
     tile.innerHTML = letter;
   }
@@ -84,8 +129,6 @@ function createLetterTile(parentDiv, letter) {
   div.appendChild(tile);
   parentDiv.appendChild(div);
 }
-
-init();
 
 function startInteraction() {
   document.addEventListener("click", handleMouseClick);
@@ -247,7 +290,7 @@ function getGuess() {
   for (let tile of tiles) {
     guess += tile.dataset.letter;
   }
-
+  console.log(guess);
   return guess;
 }
 
