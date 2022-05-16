@@ -1,28 +1,35 @@
 "use strict";
 
 // elements
+const alertContainer = document.querySelector("[data-alert-container]");
 const screen = document.getElementById("screen");
 const wrapper = document.getElementById("wrapper");
-const alertContainer = document.querySelector("[data-alert-container]");
 const guessGrid = document.querySelector("[data-guess-grid]");
 const keyboard = document.querySelector("[data-keyboard]");
 const switchElement = document.getElementById("switch");
+const quibID = document.querySelector(".id");
 
 // variables
-let quibMD5 = ""; //"2fb69bcf9effdc051bbd5ef21cd85273";
+let quibMD5 = "";
 let permutedQuib = "";
-//   "qwt jlj ewy awlamyi ackdd ewy cknj? ek oye ek ewy kewyc dljy.";
 
-const options = {
-  method: "GET",
-  headers: {
-    "X-RapidAPI-Host": "dad-jokes.p.rapidapi.com",
-    "X-RapidAPI-Key": "b7ade761b6msh939ee3fc8db42bfp16af9fjsn99fbb4c5e3d0",
-  },
-};
+(function () {
+  fetch("https://v2.jokeapi.dev/joke/Any")
+    .then((response) => response.json())
+    .then((response) => setData(response))
+    .catch((err) => console.error(err));
 
+  const totalGames = window.localStorage.getItem("totalGames") || 0;
+  window.localStorage.setItem("totalGames", Number(totalGames) + 1);
+})();
+
+function initLocalStorage() {
+  const storedCurrentWordIndex =
+    window.localStorage.getItem("currentWordIndex");
+}
+
+// light/dark mode toggle function
 function lightDarkMode() {
-  console.log("test");
   const bgcolor = getComputedStyle(document.documentElement).getPropertyValue(
     "--bgcolor"
   );
@@ -32,13 +39,6 @@ function lightDarkMode() {
   document.documentElement.style.setProperty("--bgcolor", fgcolor);
   document.documentElement.style.setProperty("--fgcolor", bgcolor);
 }
-
-lightDarkMode();
-
-fetch("https://dad-jokes.p.rapidapi.com/random/joke", options)
-  .then((response) => response.json())
-  .then((response) => setData(response))
-  .catch((err) => console.error(err));
 
 function shuffle(string) {
   const a = string.split("");
@@ -53,17 +53,33 @@ function shuffle(string) {
   return a.join("");
 }
 
+function setQuibID(id) {
+  quibID.innerHTML = `#${id}`;
+}
+
+function updateStats(totalSolved) {
+  console.log("test");
+  const totalSolvedElement = document.getElementById("total-solved");
+  totalSolvedElement.innerText = totalSolved;
+}
+
 function setData(data) {
+  console.log(data);
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const permuted = shuffle(alphabet);
+
+  setQuibID(data.id);
+  updateStats(window.localStorage.getItem("totalSolved") || 0);
+
   quibMD5 = md5(
-    (data.joke || data.body[0].setup + " " + data.body[0].punchline)
+    (data.joke || data.setup + " " + data.delivery)
+      .replace(/\s+/g, " ")
       .toLowerCase()
       .split(" ")
       .join("")
   );
   permutedQuib = `${(
-    data.joke || data.body[0].setup + " " + data.body[0].punchline
+    data.joke || data.setup + " " + data.delivery
   ).toLowerCase()}`;
 
   let i = 0;
@@ -99,9 +115,11 @@ switchElement.addEventListener("click", () => {
   }
   lightDarkMode();
 });
+
 // split quib into array of words
 // loop through words with createLetterTile and wrap in word class div
 function init() {
+  lightDarkMode();
   const wordsArray = createWords(permutedQuib);
 
   for (let word of wordsArray) {
@@ -162,6 +180,7 @@ function stopInteraction() {
   document.removeEventListener("keydown", handleKeyPress);
 }
 
+// mouse (on-screen keyboard) input function
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
     pressKey(e.target.dataset.key.toLowerCase());
@@ -186,6 +205,7 @@ function handleMouseClick(e) {
   }
 }
 
+// keyboard input function
 function handleKeyPress(e) {
   if (e.key === "Enter") {
     submitGuess();
@@ -201,6 +221,7 @@ function handleKeyPress(e) {
   }
 }
 
+// input key function
 function pressKey(key) {
   const activeTiles = getActiveTiles();
 
@@ -276,6 +297,7 @@ function removeAllActiveTiles() {
   }
 }
 
+// sets all locations of a letter to active
 function setAllActiveTiles(letter) {
   // find all same letters (returns nodelist)
   const letterLocations = document.querySelectorAll(
@@ -288,6 +310,7 @@ function setAllActiveTiles(letter) {
   }
 }
 
+// returns letters that have been used already
 function getGuessedLetters() {
   const keyboardKeys = keyboard.querySelectorAll(".used");
   let letters = [];
@@ -299,11 +322,13 @@ function getGuessedLetters() {
   return letters;
 }
 
+// stop interaction and check for win
 function submitGuess() {
   stopInteraction();
   checkWinLose(getGuess());
 }
 
+// function to get guess string
 function getGuess() {
   // query select all tiles add up everything to a guess string
   const tiles = document.querySelectorAll(".tile:not(.opacity)");
@@ -315,18 +340,27 @@ function getGuess() {
   return guess;
 }
 
+// check for win
 function checkWinLose(guess) {
   if (md5(guess) === quibMD5) {
     showAlert("You Win!", 5000);
     danceTiles(getLetterTiles());
+
+    const totalSolved = window.localStorage.getItem("totalSolved") || 0;
+    window.localStorage.setItem("totalSolved", Number(totalSolved) + 1);
+
+    updateStats(totalSolved);
+
     return;
   }
 
+  // else keep trying alert, restart interaction
   showAlert("Keep Trying...", 3000);
   shakeTiles(getLetterTiles());
   startInteraction();
 }
 
+// keep trying animation
 function shakeTiles(tiles) {
   tiles.forEach((tile) => {
     tile.classList.add("shake");
@@ -340,6 +374,7 @@ function shakeTiles(tiles) {
   });
 }
 
+// you win animation
 function danceTiles(tiles) {
   tiles.forEach((tile, index) => {
     setTimeout(() => {

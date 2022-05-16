@@ -21,15 +21,15 @@ body {
 }
 
 .screen {
-  position: fixed;
-  z-index: 1;
-  width: 100vw;
-  height: 100vh;
+  align-items: center;
   background: var(--bgcolor);
+  color: var(--fgcolor);
   display: flex;
   justify-content: center;
-  align-items: center;
-  color: var(--fgcolor);
+  height: 100vh;
+  position: fixed;
+  width: 100vw;
+  z-index: 1;
 }
 
 .hide {
@@ -37,21 +37,22 @@ body {
 }
 
 .close {
-  position: absolute;
+  color: var(--fgcolor);
+  cursor: pointer;
   font-size: 1.5rem;
   font-weight: 900;
-  top: 0;
   left: 0;
-  color: var(--fgcolor);
   padding: 5px 10px;
-  cursor: pointer;
+  position: absolute;
+  top: 0;
 }
+
 .wrapper {
-  width: 90%;
-  height: auto;
   border: 1px solid var(--fgcolor);
+  height: auto;
   max-width: 500px;
   position: relative;
+  width: 90%;
 }
 
 .instructions {
@@ -59,15 +60,15 @@ body {
   text-align: center;
 }
 
-.high-scores {
+.statistics {
   margin: 20px;
   text-align: center;
 }
 
 h1 {
-  margin: 0;
-  font-weight: 500;
   color: var(--fgcolor);
+  font-weight: 500;
+  margin: 0;
   text-align: center;
 }
 
@@ -77,11 +78,11 @@ h1 {
 }
 
 table {
-  color: var(--fgcolor);
-  margin-top: 20px;
-  display: flex;
   align-items: center;
+  color: var(--fgcolor);
+  display: flex;
   justify-content: center;
+  margin-top: 20px;
 }
 
 ul {
@@ -184,12 +185,9 @@ svg {
   display: flex;
 }
 
-.navbar .title img {
-  filter: invert(1);
-}
-
 .title svg {
   height: 20px;
+  stroke: var(--fgcolor);
 }
 
 .nav-left {
@@ -212,6 +210,12 @@ svg {
   padding: 0.5em;
   align-items: center;
   cursor: pointer;
+}
+
+.id {
+  position: absolute;
+  top: 40px;
+  left: 5px;
 }
 
 .keyboard {
