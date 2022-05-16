@@ -13,44 +13,67 @@ let quibMD5 = ""; //"2fb69bcf9effdc051bbd5ef21cd85273";
 let permutedQuib = "";
 //   "qwt jlj ewy awlamyi ackdd ewy cknj? ek oye ek ewy kewyc dljy.";
 
-fetch("https://v2.jokeapi.dev/joke/Any")
+const options = {
+  method: "GET",
+  headers: {
+    "X-RapidAPI-Host": "dad-jokes.p.rapidapi.com",
+    "X-RapidAPI-Key": "b7ade761b6msh939ee3fc8db42bfp16af9fjsn99fbb4c5e3d0",
+  },
+};
+
+function lightDarkMode() {
+  console.log("test");
+  const bgcolor = getComputedStyle(document.documentElement).getPropertyValue(
+    "--bgcolor"
+  );
+  const fgcolor = getComputedStyle(document.documentElement).getPropertyValue(
+    "--fgcolor"
+  );
+  document.documentElement.style.setProperty("--bgcolor", fgcolor);
+  document.documentElement.style.setProperty("--fgcolor", bgcolor);
+}
+
+lightDarkMode();
+
+fetch("https://dad-jokes.p.rapidapi.com/random/joke", options)
   .then((response) => response.json())
-  .then((data) => setData(data));
+  .then((response) => setData(response))
+  .catch((err) => console.error(err));
+
+function shuffle(string) {
+  const a = string.split("");
+  const n = a.length;
+
+  for (let i = n - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    let tmp = a[i];
+    a[i] = a[j];
+    a[j] = tmp;
+  }
+  return a.join("");
+}
 
 function setData(data) {
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
-  const permuted = "kdpqoheawxnjzvurslmgytfbci";
-
+  const permuted = shuffle(alphabet);
   quibMD5 = md5(
-    (data.joke || data.setup + " " + data.delivery)
+    (data.joke || data.body[0].setup + " " + data.body[0].punchline)
       .toLowerCase()
       .split(" ")
       .join("")
   );
   permutedQuib = `${(
-    data.joke || data.setup + " " + data.delivery
+    data.joke || data.body[0].setup + " " + data.body[0].punchline
   ).toLowerCase()}`;
-  console.log(permutedQuib);
 
   let i = 0;
   let result = "";
-  console.log(permutedQuib.length);
   while (i < permutedQuib.length) {
     let ind = alphabet.indexOf(permutedQuib.charAt(i));
     result += permuted.charAt(ind) || permutedQuib.charAt(i);
-    // if (permutedQuib.charAt(i).match("/^[A-Za-z]+$/")) {
-    //   let ind = alphabet.indexOf(permutedQuib.charAt(i));
-    //   result = result + permuted.charAt(ind) || permutedQuib.charAt(i);
-    // } else {
-    //   result += permuted.charAt(permutedQuib.charAt(i));
-    //   console.log("test");
-    // }
     i++;
-    console.log(result);
   }
 
-  console.log(quibMD5);
-  console.log(result);
   permutedQuib = result;
   init();
 }
@@ -70,12 +93,11 @@ let mode = "light";
 switchElement.addEventListener("click", () => {
   document.body.classList.toggle("dark-mode");
   if (mode === "light") {
-    switchElement.style.border = "solid 1px rgb(255, 255, 255)";
     mode = "dark";
   } else {
-    switchElement.style.border = "solid 1px rgb(0, 0, 0)";
     mode = "light";
   }
+  lightDarkMode();
 });
 // split quib into array of words
 // loop through words with createLetterTile and wrap in word class div
@@ -290,7 +312,6 @@ function getGuess() {
   for (let tile of tiles) {
     guess += tile.dataset.letter;
   }
-  console.log(guess);
   return guess;
 }
 
